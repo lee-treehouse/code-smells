@@ -6,11 +6,16 @@ class Calculator {
     this._currentValue = initialValue;
   }
 
+  outputCurrentValue() {
+    console.log(`current value is: ${this._currentValue}`);
+  }
+
   execute(operation: string, newValue: number) {
     switch (operation) {
       case "add":
         this._operations.push({ operation: "add", oldValue: this._currentValue, value: newValue });
         this._currentValue = this._currentValue + newValue;
+        this.outputCurrentValue();
         return this;
       case "subtract":
         this._operations.push({
@@ -19,6 +24,7 @@ class Calculator {
           value: newValue,
         });
         this._currentValue = this._currentValue - newValue;
+        this.outputCurrentValue();
         return this;
       case "multiply":
         this._operations.push({
@@ -27,6 +33,7 @@ class Calculator {
           value: newValue,
         });
         this._currentValue = this._currentValue * newValue;
+        this.outputCurrentValue();
         return this;
       case "divide":
         this._operations.push({
@@ -35,6 +42,7 @@ class Calculator {
           value: newValue,
         });
         this._currentValue = this._currentValue / newValue;
+        this.outputCurrentValue();
         return this;
       default:
         throw new Error("Unsupported operation");
