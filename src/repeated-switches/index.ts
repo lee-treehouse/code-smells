@@ -1,4 +1,7 @@
-class Calculator {
+import { IOperator } from "./operator";
+import { getOperator } from "./operatorFactory";
+
+export class Calculator {
   private _operations: { operation: string; oldValue: number; value: number }[] = [];
   private _currentValue: number;
 
@@ -11,60 +14,17 @@ class Calculator {
   }
 
   execute(operation: string, newValue: number) {
-    switch (operation) {
-      case "add":
-        this._operations.push({ operation: "add", oldValue: this._currentValue, value: newValue });
-        this._currentValue = this._currentValue + newValue;
-        this.outputCurrentValue();
-        return this;
-      case "subtract":
-        this._operations.push({
-          operation: "subtract",
-          oldValue: this._currentValue,
-          value: newValue,
-        });
-        this._currentValue = this._currentValue - newValue;
-        this.outputCurrentValue();
-        return this;
-      case "multiply":
-        this._operations.push({
-          operation: "multiply",
-          oldValue: this._currentValue,
-          value: newValue,
-        });
-        this._currentValue = this._currentValue * newValue;
-        this.outputCurrentValue();
-        return this;
-      case "divide":
-        this._operations.push({
-          operation: "divide",
-          oldValue: this._currentValue,
-          value: newValue,
-        });
-        this._currentValue = this._currentValue / newValue;
-        this.outputCurrentValue();
-        return this;
-      default:
-        throw new Error("Unsupported operation");
-    }
+    this._operations.push({ operation, oldValue: this._currentValue, value: newValue });
+
+    const operator: IOperator = getOperator(operation);
+    this._currentValue = operator.execute(this._currentValue, newValue);
+    return this;
   }
 
   printOperations() {
     for (const operationObj of this._operations) {
-      switch (operationObj.operation) {
-        case "add":
-          console.log(`${operationObj.oldValue} plus ${operationObj.value}`);
-          break;
-        case "subtract":
-          console.log(`${operationObj.oldValue} minus ${operationObj.value}`);
-          break;
-        case "multiply":
-          console.log(`${operationObj.oldValue} multiplied by ${operationObj.value}`);
-          break;
-        case "divide":
-          console.log(`${operationObj.oldValue} divided by ${operationObj.value}`);
-          break;
-      }
+      const operator: IOperator = getOperator(operationObj.operation);
+      console.log(operator.describeOperation(operationObj.oldValue, operationObj.value));
     }
     console.log("-----------");
     console.log(`Total: ${this._currentValue}`);
